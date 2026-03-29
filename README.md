@@ -28,4 +28,5 @@ By combining TinyFish with OpenAI, we move beyond simple "web scraping." Our age
 
 ### Setup Instructions:
 1. pip install requests
-2. python my_agent.py
+2. pip install python-dotenv
+3. python my_agent.py
