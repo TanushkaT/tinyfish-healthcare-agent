@@ -1,9 +1,18 @@
 import json
 import os
 import requests
+from dotenv import load_dotenv
 
-# 1. Replace with your actual API key
-TINYFISH_API_KEY = "YOUR_API_KEY_HERE"
+# This loads the variables from the .env file
+load_dotenv()
+
+# Now you can access them safely
+TINYFISH_API_KEY = os.getenv("TINYFISH_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# Test it
+if not TINYFISH_API_KEY:
+    print("❌ Error: API Key not found!")
 
 def run_web_agent(target_url, goal_description):
     print(f"🚀 Starting agent on: {target_url}...")
