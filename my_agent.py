@@ -24,6 +24,7 @@ TINYFISH_API_KEY = os.getenv("TINYFISH_API_KEY")
 if not TINYFISH_API_KEY:
     print("❌ Error: API Key not found!")
 
+
 def run_web_agent(target_url, goal_description):
     print(f"🚀 Starting agent on: {target_url}...")
     
@@ -37,27 +38,25 @@ def run_web_agent(target_url, goal_description):
             "url": target_url,
             "goal": goal_description,
         },
-        stream=True, # Allows us to see the agent's progress live
+        stream=True, 
     )
 
-   for line in response.iter_lines():
-       if line:
-           line_str = line.decode("utf-8")
-           if line_str.startswith("data: "):
-               event = json.loads(line_str[6:])
-            
-            # Show the heartbeat to prove it's live
-               if event.get("type") == "HEARTBEAT":
-                   print("💓 Agent is thinking...")
-            
-            # THIS IS THE PART FOR VIDEO
-               elif event.get("type") == "AGENT_RESULT":
-                   print("\n" + "="*30)
-                   print("✅ TASK COMPLETED SUCCESSFULLY")
-                   print("="*30)
-                   # Pretty-print the JSON result
-                   print(json.dumps(event.get("data"), indent=4))
-                   print("="*30 + "\n")
+    # THIS WAS MOVED RIGHT BY 4 SPACES
+    for line in response.iter_lines():
+        if line:
+            line_str = line.decode("utf-8")
+            if line_str.startswith("data: "):
+                event = json.loads(line_str[6:])
+                
+                if event.get("type") == "HEARTBEAT":
+                    print("💓 Agent is thinking...")
+                
+                elif event.get("type") == "AGENT_RESULT":
+                    print("\n" + "="*30)
+                    print("✅ TASK COMPLETED SUCCESSFULLY")
+                    print("="*30)
+                    print(json.dumps(event.get("data"), indent=4))
+                    print("="*30 + "\n")
 
 # 2. Test Goal: Extract details from a sample site
 run_web_agent(
