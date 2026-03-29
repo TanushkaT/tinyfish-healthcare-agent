@@ -30,7 +30,7 @@ def run_web_agent(target_url, goal_description):
     print(f"🎯 Goal: {goal_description}\n")
     
     # TinyFish SSE endpoint for live automation
-    api_url = "https://agent.tinyfish.ai"
+    api_url = "https://agent.tinyfish.ai/v1/automation/run-sse"
     
     headers = {
         "X-API-Key": TINYFISH_API_KEY,
