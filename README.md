@@ -14,17 +14,26 @@ Scalability Issues: Costs rise as appointment volumes increase.
 
 ### ✅ The Solution
 An autonomous agent acts as an AI scheduling operator. It uses the TinyFish API to:
+
 Navigate complex, JS-heavy hospital booking systems.
+
 Authenticate and maintain secure sessions.
+
 Extract real-time availability and auto-fill patient forms.
+
 Confirm bookings end-to-end without human intervention.
 
 ### 🛠️ Tech Stack
 The autonomous agent is built using a modern, scalable stack designed for high-performance web automation:
+
 Core Infrastructure: TinyFish Web Agent API — Handles authenticated browser sessions and dynamic navigation.
+
 Language: Python 3.10+ — Used for backend logic and API orchestration.
+
 AI Engine: Google Gemini (1.5 Flash) — Acts as the "brain" to process unstructured web data and understand complex UI elements.
+
 Networking: requests & google-generativeai — For high-speed communication and LLM integration.
+
 Data Handling: JSON & Pydantic — Ensures all extracted data is structured and validated.
 
 ### 💡 Why this stack?
