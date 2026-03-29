@@ -46,6 +46,7 @@ def run_web_agent(target_url, goal_description):
                 return
             
             # THE LOOP MUST BE INSIDE THE 'WITH' BLOCK
+    
             for line in response.iter_lines():
                 if line:
                     line_str = line.decode("utf-8").strip()
@@ -54,20 +55,27 @@ def run_web_agent(target_url, goal_description):
                             event = json.loads(line_str[6:])
                             event_type = event.get("type")
                             
+                            # 1. Show the "Heartbeat" (Proof of life)
                             if event_type == "HEARTBEAT":
                                 print("💓 Agent is navigating and thinking...")
                             
-                            elif event_type in ["AGENT_RESULT", "COMPLETE", "FINISH"]:
+                            # 2. THE FIX: Look for data in ANY event type
+                            # If 'data' exists and isn't empty, we print it!
+                            data = event.get("data")
+                            if data is not None:
                                 print("\n" + "="*40)
-                                print("✅ SUCCESS: DATA EXTRACTED")
+                                print(f"✅ DATA RECEIVED ({event_type})")
                                 print("="*40)
-                                # Show the actual final data
-                                print(json.dumps(event.get("data"), indent=4))
+                                print(json.dumps(data, indent=4))
                                 print("="*40 + "\n")
-                                break 
+                                
+                                # If it's a final event, we can stop
+                                if event_type in ["AGENT_RESULT", "COMPLETE", "FINISH"]:
+                                    break 
                             
-                            else:
-                                print(f"📡 {event_type}: {event.get('message', 'Processing...')}")
+                            # 3. Fallback: Print the raw message if no data object exists
+                            elif event.get("message"):
+                                print(f"📡 Status: {event.get('message')}")
                                 
                         except json.JSONDecodeError:
                             continue
@@ -80,5 +88,3 @@ if __name__ == "__main__":
         target_url="https://www.google.com", 
         goal_description="Extract the text of the 'About' and 'Advertising' links at the bottom of the page. Return as a JSON list."
     )
-
-
