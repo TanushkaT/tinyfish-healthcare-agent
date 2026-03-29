@@ -14,21 +14,23 @@ def run_web_agent(target_url, goal_description):
     headers = {"X-API-Key": TINYFISH_API_KEY, "Content-Type": "application/json"}
     payload = {"url": target_url, "goal": goal_description}
 
-    # 'with' keeps the connection open
-    with requests.post(api_url, headers=headers, json=payload, stream=True) as response:
+    # 'stream=True' and a long timeout prevent Codespaces from killing the process
+    with requests.post(api_url, headers=headers, json=payload, stream=True, timeout=120) as response:
         for line in response.iter_lines(decode_unicode=True):
             if line and line.startswith("data: "):
                 event = json.loads(line[6:])
+                event_type = event.get("type")
                 
-                if event.get("type") == "HEARTBEAT":
-                    print("💓 Agent is thinking...")
+                if event_type == "HEARTBEAT":
+                    print("💓 Agent is still thinking... (Stay alive)")
                 
-                # Check for any message or data chunk
-                elif event.get("data"):
-                    print("\n" + "="*40 + "\n✅ DATA RECEIVED!\n" + "="*40)
-                    print(json.dumps(event.get("data"), indent=4))
+                # Check for ANY data or message
+                data = event.get("data")
+                if data:
+                    print("\n" + "="*40 + "\n✅ SUCCESS: DATA RECEIVED!\n" + "="*40)
+                    print(json.dumps(data, indent=4))
                     print("="*40 + "\n")
-                    break # Only stop AFTER printing data
+                    return # Exit ONLY after printing data
                 
                 elif event.get("message"):
                     print(f"📡 Status: {event.get('message')}")
@@ -36,5 +38,5 @@ def run_web_agent(target_url, goal_description):
 if __name__ == "__main__":
     run_web_agent(
         "https://www.google.com", 
-        "Extract the text of the 'About' and 'Advertising' links at the bottom of the page. Return as a JSON list."
+        "Find the 'About' link at the bottom and return its text as a JSON list."
     )
