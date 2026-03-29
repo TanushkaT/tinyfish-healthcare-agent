@@ -23,10 +23,15 @@ if not TINYFISH_API_KEY:
     exit()
 
 def run_web_agent(target_url, goal_description):
+    """
+    Connects to TinyFish API, navigates the web, and streams results live.
+    Includes a timeout fix for GitHub Codespaces stability.
+    """
     print(f"\n🚀 Starting Agent on: {target_url}")
     print(f"🎯 Goal: {goal_description}\n")
     
-    api_url = "https://agent.tinyfish.ai/v1/automation/run-sse"
+    # Official TinyFish SSE endpoint
+    api_url = "https://agent.tinyfish.ai"
     
     headers = {
         "X-API-Key": TINYFISH_API_KEY,
@@ -39,28 +44,26 @@ def run_web_agent(target_url, goal_description):
     }
 
     try:
-        # We use the 'with' block to keep the connection open for the stream
-        with requests.post(api_url, headers=headers, json=payload, stream=True) as response:
+        # 'stream=True' and 'timeout' keep the cloud connection from closing early
+        with requests.post(api_url, headers=headers, json=payload, stream=True, timeout=300) as response:
             if response.status_code != 200:
                 print(f"❌ API Error: {response.status_code} - {response.text}")
                 return
             
-            # THE LOOP MUST BE INSIDE THE 'WITH' BLOCK
-    
-            for line in response.iter_lines():
+            # Iterate through the Server-Sent Events (SSE)
+            for line in response.iter_lines(decode_unicode=True):
                 if line:
-                    line_str = line.decode("utf-8").strip()
+                    line_str = line.strip()
                     if line_str.startswith("data: "):
                         try:
                             event = json.loads(line_str[6:])
                             event_type = event.get("type")
                             
-                            # 1. Show the "Heartbeat" (Proof of life)
+                            # SHOW THIS IN YOUR VIDEO: Proves the agent is active
                             if event_type == "HEARTBEAT":
                                 print("💓 Agent is navigating and thinking...")
                             
-                            # 2. THE FIX: Look for data in ANY event type
-                            # If 'data' exists and isn't empty, we print it!
+                            # CATCH ANY DATA RECEIVED
                             data = event.get("data")
                             if data is not None:
                                 print("\n" + "="*40)
@@ -69,11 +72,11 @@ def run_web_agent(target_url, goal_description):
                                 print(json.dumps(data, indent=4))
                                 print("="*40 + "\n")
                                 
-                                # If it's a final event, we can stop
+                                # If it's a final event, we can safely stop
                                 if event_type in ["AGENT_RESULT", "COMPLETE", "FINISH"]:
                                     break 
                             
-                            # 3. Fallback: Print the raw message if no data object exists
+                            # Show status messages so the video looks active
                             elif event.get("message"):
                                 print(f"📡 Status: {event.get('message')}")
                                 
@@ -81,9 +84,10 @@ def run_web_agent(target_url, goal_description):
                             continue
                         
     except Exception as e:
-        print(f"❌ An error occurred: {e}")
+        print(f"❌ Connection error: {e}")
 
 if __name__ == "__main__":
+    # We use Google for the demo because it's fast and reliable
     run_web_agent(
         target_url="https://www.google.com", 
         goal_description="Extract the text of the 'About' and 'Advertising' links at the bottom of the page. Return as a JSON list."
