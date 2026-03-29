@@ -1,14 +1,24 @@
 import json
 import os
 import requests
+import google.generativeai as genai
 from dotenv import load_dotenv
 
 # This loads the variables from the .env file
 load_dotenv()
 
+# Setup Gemini
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+model = genai.GenerativeModel('gemini-1.5-flash')
+
+def process_with_gemini(web_data):
+    prompt = f"You are a healthcare assistant. Based on this website data: {web_data}, find the best appointment slot and return only the date and time."
+    
+    response = model.generate_content(prompt)
+    return response.text
+
 # Now you can access them safely
 TINYFISH_API_KEY = os.getenv("TINYFISH_API_KEY")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 # Test it
 if not TINYFISH_API_KEY:
