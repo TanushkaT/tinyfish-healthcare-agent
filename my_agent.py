@@ -78,5 +78,7 @@ def run_web_agent(target_url, goal_description):
 if __name__ == "__main__":
     run_web_agent(
         target_url="https://agentql.com", 
-        goal_description="Find all subscription plans and their prices. Return the result in a clean JSON format."
+        # More specific goal ensures it doesn't return 'null'
+        goal_description="Find the pricing section. Extract all plan names (e.g. Free, Pro) and their monthly costs. Return as a JSON list."
     )
+
