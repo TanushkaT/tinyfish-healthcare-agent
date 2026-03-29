@@ -5,8 +5,11 @@ Built with TinyFish Web Agent API
 
 ### ⚠️ The Problem
 Healthcare coordinators currently waste hours manually logging into fragmented hospital portals. These systems are dynamic, session-based, and lack unified APIs. This leads to:
+
 Slow Coordination: Checking multiple specialists one-by-one.
+
 Human Error: Repeatedly re-entering patient data manually.
+
 Scalability Issues: Costs rise as appointment volumes increase.
 
 ### ✅ The Solution
