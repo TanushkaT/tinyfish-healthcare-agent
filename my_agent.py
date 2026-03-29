@@ -48,16 +48,19 @@ def run_web_agent(target_url, goal_description):
             if line_str.startswith("data: "):
                 event = json.loads(line_str[6:])
                 
+                # 1. Always show the heartbeat so you know it's working
                 if event.get("type") == "HEARTBEAT":
-                    print("💓 Agent is thinking...")
+                    print("💓 Agent is navigating and thinking...")
                 
-                elif event.get("type") == "AGENT_RESULT":
+                # 2. Print ANY data the agent sends back
+                # This catches 'AGENT_RESULT', 'ACTION_COMPLETED', and others
+                elif "data" in event:
                     print("\n" + "="*30)
-                    print("✅ TASK COMPLETED SUCCESSFULLY")
+                    print(f"📡 AGENT UPDATE: {event.get('type')}")
                     print("="*30)
                     print(json.dumps(event.get("data"), indent=4))
                     print("="*30 + "\n")
-
+                    
 # 2. Test Goal: Extract details from a sample site
 run_web_agent(
     "https://agentql.com", 
