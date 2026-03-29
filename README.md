@@ -28,6 +28,6 @@ Data Handling: JSON & Pydantic — Ensures all extracted data is structured and 
 By combining TinyFish with Google Gemini, the agent moves beyond simple "web scraping." The agent uses Gemini's advanced reasoning to navigate hospital workflows and perform real transactions without needing a formal API, all while remaining cost-effective and developer-friendly.
 
 ### Setup Instructions:
-pip install requests python-dotenv google-generativeai
-Add your TINYFISH_API_KEY and GEMINI_API_KEY to a .env file.
-python my_agent.py
+1. pip install requests python-dotenv google-generativeai
+2. Add your TINYFISH_API_KEY and GEMINI_API_KEY to a .env file.
+3. python my_agent.py
